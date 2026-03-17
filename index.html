@@ -2,67 +2,60 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- PWA 配置核心标签 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="manifest" href="manifest.json">
+    <!-- 针对 iOS 系统的原生 App 接管设置 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="桌面UI">
+    <link rel="apple-touch-icon" href="https://pic1.imgdb.cn/item/69b964e2df27f3bc5808f6be.jpg">
     <title>凛冬机</title>
     <style>
         :root {
-            --bg-color: #ffffff;
-            --dot-color: #e4edf8;
-            --text-main: #5a5a5a;
-            --text-sub: #999999;
-            --widget-bg: rgba(255, 255, 255, 0.7);
-            --widget-border: 1px solid rgba(255, 255, 255, 0.9);
+            --bg-color: #ffffff; --dot-color: #e4edf8;
+            --text-main: #5a5a5a; --text-sub: #999999;
+            --widget-bg: rgba(255, 255, 255, 0.7); --widget-border: 1px solid rgba(255, 255, 255, 0.9);
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            --icon-color: #7a7a7a;
-            --ios-green: #34C759;
-            --sys-color: #111111;
+            --icon-color: #7a7a7a; --ios-green: #34C759; --sys-color: #111111;
         }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f0f0f0; display: flex; justify-content: center;
-            overflow: hidden; overscroll-behavior-y: none; touch-action: pan-x; 
+            overflow: hidden; overscroll-behavior-y: none; touch-action: pan-x;
+            /* 防止长按选中文本，增强原生 App 体验 */
+            -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
         }
 
         .phone-screen {
-            width: 100%; max-width: 480px; height: 100%;
-            background-color: var(--bg-color);
+            width: 100%; max-width: 480px; height: 100%; background-color: var(--bg-color);
             background-image: radial-gradient(var(--dot-color) 2.5px, transparent 2.5px);
-            background-size: 38px 38px; background-position: center;
-            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;
+            background-size: 38px 38px; background-position: center; position: relative; overflow: hidden;
         }
 
         .ios-status-bar {
-            position: absolute; top: 0; left: 0; width: 100%; height: 44px;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 24px; box-sizing: border-box; z-index: 50;
-            color: var(--sys-color); font-weight: 600; font-size: 15px; letter-spacing: -0.2px; pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 44px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 24px; box-sizing: border-box; z-index: 50; color: var(--sys-color); font-weight: 600; font-size: 15px; letter-spacing: -0.2px; pointer-events: none;
         }
         .sys-time { margin-top: 1px; margin-left: 8px; font-weight: 600; }
         .sys-icons { display: flex; align-items: center; gap: 5px; margin-right: 2px; }
         .sys-battery { display: flex; align-items: center; margin-left: 2px; }
-        .sys-battery-body {
-            width: 23px; height: 11.5px; border: 1px solid rgba(0,0,0,0.45);
-            border-radius: 3.5px; padding: 1px; box-sizing: border-box; display: flex;
-        }
+        .sys-battery-body { width: 23px; height: 11.5px; border: 1px solid rgba(0,0,0,0.45); border-radius: 3.5px; padding: 1px; box-sizing: border-box; display: flex; }
         .sys-battery-fill { height: 100%; width: 50%; background-color: var(--sys-color); border-radius: 1.5px; transition: width 0.3s, background-color 0.3s; }
         .sys-battery-cap { width: 1px; height: 4px; background-color: rgba(0,0,0,0.45); border-top-right-radius: 2px; border-bottom-right-radius: 2px; margin-left: 1px; }
         .sys-battery-fill.charging { background-color: var(--ios-green) !important; }
 
         .slider-container {
-            display: flex; width: 100%; height: 100%;
-            overflow-x: scroll; overflow-y: hidden;
-            scroll-snap-type: x mandatory; scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; scrollbar-width: none;
+            display: flex; width: 100%; height: 100%; overflow-x: scroll; overflow-y: hidden;
+            scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none;
         }
         .slider-container::-webkit-scrollbar { display: none; }
         
         .page {
-            flex: 0 0 100%; width: 100%; height: 100%;
-            scroll-snap-align: center; scroll-snap-stop: always; 
-            box-sizing: border-box; padding: 70px 20px 105px 20px; 
-            display: flex; flex-direction: column; overflow-x: hidden; overflow-y: hidden;
+            flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; 
+            box-sizing: border-box; padding: 70px 20px 105px 20px; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: hidden;
         }
 
         .editable-img { background: linear-gradient(135deg, #f5f5f5, #e8e8e8); border: 1px solid rgba(255,255,255,0.8); object-fit: cover; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
@@ -188,6 +181,7 @@
             </div>
         </div>
 
+        <!-- === 左右丝滑视窗 === -->
         <div class="slider-container">
 
             <!-- ================= 第一页 ================= -->
@@ -347,48 +341,46 @@
                         <div class="editable-text tog-pill" id="p2-txt-tog-bot">수백 번이고 널 위해 설레다 ₊⁺</div>
                     </div>
                     
-                    <!-- 第二页 App 图标更换：游戏, 倒数日, 美团, 情侣空间 -->
+                    <!-- 第二页 App -->
                     <div class="apps-grid">
                         <div class="app-item">
-                            <!-- 游戏：经典手柄 -->
+                            <!-- 【极简游戏手柄】 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <rect x="2" y="6" width="20" height="12" rx="6"/>
-                                    <path d="M6 12h4M8 10v4M15 12h.01M18 12h.01"/>
+                                    <rect x="2" y="6" width="20" height="12" rx="4"/>
+                                    <path d="M6 12h4M8 10v4"/><circle cx="15" cy="13" r="1"/><circle cx="18" cy="11" r="1"/>
                                 </svg>
                             </div>
                             <span class="editable-text app-name" id="p2-txt-app-new-1">游戏</span>
                         </div>
                         <div class="app-item">
-                            <!-- 倒数日：日历与沙漏/箭头指代 -->
+                            <!-- 【极简日历+心形(倒数日)】 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/>
-                                    <line x1="8" y1="2" x2="8" y2="6"/>
-                                    <line x1="4" y1="10" x2="20" y2="10"/>
-                                    <path d="M12 14v4M10 16l2-2 2 2"/>
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                    <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                                    <path d="M10 16l4-4v6"/> <!-- 数字1隐喻倒数 -->
                                 </svg>
                             </div>
                             <span class="editable-text app-name" id="p2-txt-app-new-2">倒数日</span>
                         </div>
                         <div class="app-item">
-                            <!-- 美团：极简动物小耳轮廓(袋鼠) -->
+                            <!-- 【极简动物耳朵(美团隐喻)】 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <rect x="4" y="8" width="16" height="14" rx="3"/>
-                                    <path d="M8 8V4c0-1.5 1-3 3-3s3 1.5 3 3v4"/>
-                                    <path d="M7 8L5 3l4 3M17 8l2-5-4 3"/>
+                                    <path d="M12 22a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/>
+                                    <path d="M8 8l1-4 3 3M16 8l-1-4-3 3"/>
+                                    <path d="M9 14s1.5 2 3 2 3-2 3-2"/>
                                 </svg>
                             </div>
                             <span class="editable-text app-name" id="p2-txt-app-new-3">美团</span>
                         </div>
                         <div class="app-item">
-                            <!-- 情侣空间：双交叠爱心 -->
+                            <!-- 【极简交叠爱心(情侣空间)】 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <path d="M10.5 6a4.5 4.5 0 0 0-8 3.5c0 3 4.5 6.5 6.5 8 2-1.5 6.5-5 6.5-8a4.5 4.5 0 0 0-5-3.5Z"/>
-                                    <path d="M13.5 18a4.5 4.5 0 0 0 8-3.5c0-3-4.5-6.5-6.5-8a4.5 4.5 0 0 0-5 3.5"/>
+                                    <path d="M7 5c-3.3 0-6 2.7-6 6 0 5 8 10 11 11 3-1 11-6 11-11 0-3.3-2.7-6-6-6-2.5 0-4.6 1.6-5.5 3.8C10.6 6.6 8.5 5 7 5z"/>
+                                    <circle cx="12" cy="10" r="1.5" fill="var(--icon-color)"/>
                                 </svg>
                             </div>
                             <span class="editable-text app-name" id="p2-txt-app-new-4">情侣空间</span>
@@ -399,18 +391,18 @@
             
         </div>
 
+        <!-- === 全局底部 Dock 栏 === -->
         <div class="dock-container">
             <div class="dock-app">
                 <div class="dock-icon-wrapper"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
                 <span class="editable-text dock-name" id="dock-txt-1">icity</span>
             </div>
             <div class="dock-app">
-                <!-- 论坛：极简线框留言板 -->
+                <!-- 【论坛极简双气泡交谈】 -->
                 <div class="dock-icon-wrapper">
-                    <svg viewBox="0 0 24 24">
-                        <rect x="4" y="4" width="16" height="12" rx="2" ry="2"/>
-                        <path d="M9 16v4l4-4"/>
-                        <line x1="8" y1="10" x2="16" y2="10"/>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--icon-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        <path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/>
                     </svg>
                 </div>
                 <span class="editable-text dock-name" id="dock-txt-2">论坛</span>
@@ -425,6 +417,7 @@
             </div>
         </div>
 
+        <!-- 弹窗结构 -->
         <div id="textModal" class="modal-overlay">
             <div class="modal-content">
                 <div class="modal-title">修改文字</div>
@@ -437,7 +430,18 @@
         </div>
     </div>
 
-    <!-- 引入刚刚剥离的外部核心交互文件 -->
+    <!-- PWA Service Worker 注册引擎 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').catch(function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+    
+    <!-- 引入刚刚剥离的外部核心数据交互文件 -->
     <script src="storage.js"></script>
 </body>
 </html>

@@ -2,43 +2,57 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- PWA 配置核心标签 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <link rel="manifest" href="manifest.json">
-    <!-- 针对 iOS 系统的原生 App 接管设置 -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="桌面UI">
-    <link rel="apple-touch-icon" href="https://pic1.imgdb.cn/item/69b964e2df27f3bc5808f6be.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- PWA 核心标签：改标题、支持全屏运行、指定桌面图标 -->
     <title>凛冬机</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="凛冬机">
+    <link rel="apple-touch-icon" href="https://pic1.imgdb.cn/item/69b964e2df27f3bc5808f6be.jpg">
+    
     <style>
         :root {
-            --bg-color: #ffffff; --dot-color: #e4edf8;
-            --text-main: #5a5a5a; --text-sub: #999999;
-            --widget-bg: rgba(255, 255, 255, 0.7); --widget-border: 1px solid rgba(255, 255, 255, 0.9);
+            --bg-color: #ffffff;
+            --dot-color: #e4edf8;
+            --text-main: #5a5a5a;
+            --text-sub: #999999;
+            --widget-bg: rgba(255, 255, 255, 0.7);
+            --widget-border: 1px solid rgba(255, 255, 255, 0.9);
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            --icon-color: #7a7a7a; --ios-green: #34C759; --sys-color: #111111;
+            --icon-color: #7a7a7a;
+            --ios-green: #34C759;
+            --sys-color: #111111;
         }
 
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f0f0f0; display: flex; justify-content: center;
-            overflow: hidden; overscroll-behavior-y: none; touch-action: pan-x;
-            /* 防止长按选中文本，增强原生 App 体验 */
-            -webkit-touch-callout: none; -webkit-user-select: none; user-select: none;
+            overflow: hidden; overscroll-behavior-y: none; touch-action: pan-x; 
         }
 
+        /* 隐藏安装到桌面后的系统自带滚动条 */
+        ::-webkit-scrollbar { display: none; }
+
         .phone-screen {
-            width: 100%; max-width: 480px; height: 100%; background-color: var(--bg-color);
+            width: 100%; max-width: 480px; height: 100%;
+            background-color: var(--bg-color);
             background-image: radial-gradient(var(--dot-color) 2.5px, transparent 2.5px);
-            background-size: 38px 38px; background-position: center; position: relative; overflow: hidden;
+            background-size: 38px 38px; background-position: center;
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;
         }
 
         .ios-status-bar {
-            position: absolute; top: 0; left: 0; width: 100%; height: 44px; display: flex; justify-content: space-between; align-items: center;
-            padding: 0 24px; box-sizing: border-box; z-index: 50; color: var(--sys-color); font-weight: 600; font-size: 15px; letter-spacing: -0.2px; pointer-events: none;
+            position: absolute; top: 0; left: 0; width: 100%; height: 44px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 24px; box-sizing: border-box; z-index: 50;
+            color: var(--sys-color); font-weight: 600; font-size: 15px; letter-spacing: -0.2px; pointer-events: none;
         }
+        /* 如果是全屏沉浸模式，时间再稍微下移避免刘海遮挡 */
+        @media (display-mode: standalone) { .ios-status-bar { padding-top: 15px; height: 59px; } }
+
         .sys-time { margin-top: 1px; margin-left: 8px; font-weight: 600; }
         .sys-icons { display: flex; align-items: center; gap: 5px; margin-right: 2px; }
         .sys-battery { display: flex; align-items: center; margin-left: 2px; }
@@ -51,12 +65,12 @@
             display: flex; width: 100%; height: 100%; overflow-x: scroll; overflow-y: hidden;
             scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none;
         }
-        .slider-container::-webkit-scrollbar { display: none; }
-        
         .page {
             flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; 
-            box-sizing: border-box; padding: 70px 20px 105px 20px; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: hidden;
+            box-sizing: border-box; padding: 70px 20px 105px 20px; 
+            display: flex; flex-direction: column; overflow-x: hidden; overflow-y: hidden;
         }
+        @media (display-mode: standalone) { .page { padding-top: 85px; } }
 
         .editable-img { background: linear-gradient(135deg, #f5f5f5, #e8e8e8); border: 1px solid rgba(255,255,255,0.8); object-fit: cover; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
         .editable-img::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%); pointer-events: none; }
@@ -137,6 +151,8 @@
             background: rgba(225, 225, 225, 0.75); border-radius: 40px; backdrop-filter: blur(15px);
             display: flex; justify-content: space-evenly; align-items: center; padding: 0 5px; box-sizing: border-box; z-index: 100;
         }
+        @media (display-mode: standalone) { .dock-container { bottom: 45px; } }
+        
         .dock-app { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .dock-icon-wrapper { width: 46px; height: 46px; border-radius: 14px; border: 3px solid #fff; padding: 2px; box-sizing: border-box; background: #f0f0f0; display: flex; justify-content: center; align-items: center; pointer-events: none;}
         .dock-icon-wrapper svg { width: 22px; height: 22px; stroke: var(--icon-color); stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
@@ -181,7 +197,6 @@
             </div>
         </div>
 
-        <!-- === 左右丝滑视窗 === -->
         <div class="slider-container">
 
             <!-- ================= 第一页 ================= -->
@@ -341,49 +356,50 @@
                         <div class="editable-text tog-pill" id="p2-txt-tog-bot">수백 번이고 널 위해 설레다 ₊⁺</div>
                     </div>
                     
-                    <!-- 第二页 App -->
                     <div class="apps-grid">
                         <div class="app-item">
-                            <!-- 【极简游戏手柄】 -->
+                            <!-- 游戏 (精简十字键) -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <rect x="2" y="6" width="20" height="12" rx="4"/>
-                                    <path d="M6 12h4M8 10v4"/><circle cx="15" cy="13" r="1"/><circle cx="18" cy="11" r="1"/>
+                                    <rect x="2" y="6" width="20" height="12" rx="6"/>
+                                    <circle cx="17" cy="12" r="1.5" fill="var(--icon-color)" stroke="none"/>
+                                    <circle cx="13" cy="12" r="1.5" fill="var(--icon-color)" stroke="none"/>
+                                    <path d="M6 12h4 M8 10v4"/>
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-txt-app-new-1">游戏</span>
+                            <span class="editable-text app-name" id="p2-txt-app-new3-1">游戏</span>
                         </div>
                         <div class="app-item">
-                            <!-- 【极简日历+心形(倒数日)】 -->
+                            <!-- 倒数日 (极简日历+沙漏翻页意象) -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                                    <path d="M10 16l4-4v6"/> <!-- 数字1隐喻倒数 -->
+                                    <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                                    <line x1="3" y1="10" x2="21" y2="10"/>
+                                    <path d="M12 14v4 M10 16h4"/>
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-txt-app-new-2">倒数日</span>
+                            <span class="editable-text app-name" id="p2-txt-app-new3-2">倒数日</span>
                         </div>
                         <div class="app-item">
-                            <!-- 【极简动物耳朵(美团隐喻)】 -->
+                            <!-- 美团 (极简餐盘盖) -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <path d="M12 22a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/>
-                                    <path d="M8 8l1-4 3 3M16 8l-1-4-3 3"/>
-                                    <path d="M9 14s1.5 2 3 2 3-2 3-2"/>
+                                    <path d="M3 19h18"/>
+                                    <path d="M5 19a7 7 0 0 1 14 0"/>
+                                    <path d="M12 12v-3"/><circle cx="12" cy="7" r="2"/>
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-txt-app-new-3">美团</span>
+                            <span class="editable-text app-name" id="p2-txt-app-new3-3">美团</span>
                         </div>
                         <div class="app-item">
-                            <!-- 【极简交叠爱心(情侣空间)】 -->
+                            <!-- 情侣空间 (干净的心形发光意象) -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <path d="M7 5c-3.3 0-6 2.7-6 6 0 5 8 10 11 11 3-1 11-6 11-11 0-3.3-2.7-6-6-6-2.5 0-4.6 1.6-5.5 3.8C10.6 6.6 8.5 5 7 5z"/>
-                                    <circle cx="12" cy="10" r="1.5" fill="var(--icon-color)"/>
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-txt-app-new-4">情侣空间</span>
+                            <span class="editable-text app-name" id="p2-txt-app-new3-4">情侣空间</span>
                         </div>
                     </div>
                 </div>
@@ -398,11 +414,10 @@
                 <span class="editable-text dock-name" id="dock-txt-1">icity</span>
             </div>
             <div class="dock-app">
-                <!-- 【论坛极简双气泡交谈】 -->
+                <!-- 论坛 (全新双层极简气泡框) -->
                 <div class="dock-icon-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--icon-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <svg viewBox="0 0 24 24">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                        <path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/>
                     </svg>
                 </div>
                 <span class="editable-text dock-name" id="dock-txt-2">论坛</span>
@@ -430,18 +445,18 @@
         </div>
     </div>
 
-    <!-- PWA Service Worker 注册引擎 -->
+    <!-- PWA 启动：注册 Service Worker (保证可以安装到桌面) -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('sw.js').catch(function(err) {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(
+                    (registration) => console.log('PWA ServiceWorker 注册成功'),
+                    (err) => console.log('PWA 注册失败', err)
+                );
             });
         }
     </script>
-    
-    <!-- 引入刚刚剥离的外部核心数据交互文件 -->
-    <script src="storage.js"></script>
+    <!-- 引入刚刚剥离的外部核心交互文件 -->
+    <script src="./storage.js"></script>
 </body>
 </html>

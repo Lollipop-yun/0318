@@ -9,12 +9,14 @@
     {
       "src": "https://pic1.imgdb.cn/item/69b964e2df27f3bc5808f6be.jpg",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     },
     {
       "src": "https://pic1.imgdb.cn/item/69b964e2df27f3bc5808f6be.jpg",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
-  "name": "桌面美化",
-  "short_name": "桌面UI",
+  "name": "凛冬机",
+  "short_name": "凛冬机",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f0f0f0",

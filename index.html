@@ -3,87 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- 将标题修改为凛冬机 -->
+    <!-- PWA 配置核心标签 -->
     <title>凛冬机</title>
-    
-    <!-- ================= PWA 桌面安装核心配置 ================= -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f0f0f0">
-    <!-- iOS 专属配置 (允许全屏、黑色透明状态栏、指定桌面图标) -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="凛冬机">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <!-- iOS 专属全屏与桌面图标配置 -->
     <link rel="apple-touch-icon" href="https://pic1.imgdb.cn/item/69b964e2df27f3bc5808f6be.jpg">
-    <!-- ========================================================= -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="凛冬机">
 
     <style>
         :root {
-            --bg-color: #ffffff;
-            --dot-color: #e4edf8;
-            --text-main: #5a5a5a;
-            --text-sub: #999999;
-            --widget-bg: rgba(255, 255, 255, 0.7);
-            --widget-border: 1px solid rgba(255, 255, 255, 0.9);
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            --icon-color: #7a7a7a;
-            --ios-green: #34C759;
-            --sys-color: #111111;
+            --bg-color: #ffffff; --dot-color: #e4edf8; --text-main: #5a5a5a;
+            --widget-bg: rgba(255, 255, 255, 0.7); --widget-border: 1px solid rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.03); --icon-color: #7a7a7a;
+            --ios-green: #34C759; --sys-color: #111111;
         }
-
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f0f0; display: flex; justify-content: center;
-            overflow: hidden; overscroll-behavior-y: none; touch-action: pan-x; 
-        }
-
-        .phone-screen {
-            width: 100%; max-width: 480px; height: 100%;
-            background-color: var(--bg-color);
-            background-image: radial-gradient(var(--dot-color) 2.5px, transparent 2.5px);
-            background-size: 38px 38px; background-position: center;
-            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;
-        }
-
-        .ios-status-bar {
-            position: absolute; top: 0; left: 0; width: 100%; height: 44px;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 24px; box-sizing: border-box; z-index: 50;
-            color: var(--sys-color); font-weight: 600; font-size: 15px; letter-spacing: -0.2px; pointer-events: none;
-        }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f0f0; display: flex; justify-content: center; overflow: hidden; overscroll-behavior-y: none; touch-action: pan-x; }
+        .phone-screen { width: 100%; max-width: 480px; height: 100%; background-color: var(--bg-color); background-image: radial-gradient(var(--dot-color) 2.5px, transparent 2.5px); background-size: 38px 38px; background-position: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .ios-status-bar { position: absolute; top: 0; left: 0; width: 100%; height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 24px; box-sizing: border-box; z-index: 50; color: var(--sys-color); font-weight: 600; font-size: 15px; letter-spacing: -0.2px; pointer-events: none; }
         .sys-time { margin-top: 1px; margin-left: 8px; font-weight: 600; }
         .sys-icons { display: flex; align-items: center; gap: 5px; margin-right: 2px; }
         .sys-battery { display: flex; align-items: center; margin-left: 2px; }
-        .sys-battery-body {
-            width: 23px; height: 11.5px; border: 1px solid rgba(0,0,0,0.45);
-            border-radius: 3.5px; padding: 1px; box-sizing: border-box; display: flex;
-        }
+        .sys-battery-body { width: 23px; height: 11.5px; border: 1px solid rgba(0,0,0,0.45); border-radius: 3.5px; padding: 1px; box-sizing: border-box; display: flex; }
         .sys-battery-fill { height: 100%; width: 50%; background-color: var(--sys-color); border-radius: 1.5px; transition: width 0.3s, background-color 0.3s; }
         .sys-battery-cap { width: 1px; height: 4px; background-color: rgba(0,0,0,0.45); border-top-right-radius: 2px; border-bottom-right-radius: 2px; margin-left: 1px; }
         .sys-battery-fill.charging { background-color: var(--ios-green) !important; }
-
-        .slider-container {
-            display: flex; width: 100%; height: 100%;
-            overflow-x: scroll; overflow-y: hidden;
-            scroll-snap-type: x mandatory; scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch; scrollbar-width: none;
-        }
+        .slider-container { display: flex; width: 100%; height: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .slider-container::-webkit-scrollbar { display: none; }
-        
-        .page {
-            flex: 0 0 100%; width: 100%; height: 100%;
-            scroll-snap-align: center; scroll-snap-stop: always; 
-            box-sizing: border-box; padding: 70px 20px 105px 20px; 
-            display: flex; flex-direction: column; overflow-x: hidden; overflow-y: hidden;
-        }
-
+        .page { flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; box-sizing: border-box; padding: 70px 20px 105px 20px; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: hidden; }
         .editable-img { background: linear-gradient(135deg, #f5f5f5, #e8e8e8); border: 1px solid rgba(255,255,255,0.8); object-fit: cover; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
         .editable-img::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%); pointer-events: none; }
         .editable-img:active { transform: scale(0.96); }
         .has-image::after { display: none !important; }
         .editable-text { cursor: pointer; padding: 2px 4px; border-radius: 6px; transition: opacity 0.2s, background 0.2s; }
         .editable-text:active { opacity: 0.5; background: rgba(0,0,0,0.05); }
-
         .p1 .top-profile-card { background: var(--widget-bg); border-radius: 30px; padding: 25px 15px 15px 15px; position: relative; margin-top: 15px; margin-bottom: 50px; border: var(--widget-border); box-shadow: var(--shadow); backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; }
         .p1 .profile-avatar { width: 55px; height: 55px; border-radius: 50%; position: absolute; top: -35px; border: 4px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 2; }
         .p1 .username { font-size: 13px; color: var(--text-main); margin-top: 12px; margin-bottom: 15px; }
@@ -110,23 +65,19 @@
         .sys-label { font-size: 10px; color: #ccc; transform: scale(0.9); pointer-events: none; }
         .p1 .complex-photos { display: flex; gap: 12px; }
         .p1 .complex-photos .photo-square { border-radius: 12px; }
-
         .apps-grid { flex: 0.9; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 25px 20px; padding-top: 5px; }
         .app-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         .static-icon { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #f8f8f8, #efefef); box-shadow: inset 0 0 10px rgba(255,255,255,0.8), 0 2px 5px rgba(0,0,0,0.02); display: flex; justify-content: center; align-items: center; border: 1px solid rgba(255,255,255,0.9); pointer-events: none;}
         .static-icon svg { width: 24px; height: 24px; stroke: var(--icon-color); stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .app-name { font-size: 11px; color: var(--text-main); white-space: nowrap; }
-
         .p2 .header-row { display: flex; gap: 15px; align-items: center; justify-content: center; margin-top: 15px; margin-bottom: 25px; }
         .p2 .top-avatar { width: 50px; height: 50px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .p2 .top-pill { border: 1px solid #ddd; border-radius: 20px; padding: 10px 22px; font-size: 12px; color: #666; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); }
-        
         .p2 .ribbon-grid { display: flex; justify-content: space-between; margin: 0 5px 35px 5px; } 
         .p2 .ribbon-item { display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; }
         .p2 .ribbon-avatar { width: 50px; height: 50px; border-radius: 50%; position: relative; z-index: 1; }
         .p2 .ribbon-svg { position: absolute; top: -14px; right: -10px; width: 34px; height: 34px; z-index: 10; pointer-events: none; transform: rotate(10deg); }
         .p2 .ribbon-text { font-size: 9px; color: #777; font-family: monospace; font-weight: 500;}
-        
         .p2 .polaroid-section { display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; margin-bottom: 35px; } 
         .p2 .deco-svg { position: absolute; fill: #eee; z-index: 0; }
         .p2 .polaroid-card { background: #fff; padding: 6px 6px 20px 6px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; z-index: 2; border: 1px solid #f9f9f9; }
@@ -135,12 +86,10 @@
         .p2 .polaroid-img { width: 85px; height: 85px; border-radius: 4px; position: relative; z-index: 2; }
         .p2 .paperclip { position: absolute; top: -14px; width: 18px; height: 28px; stroke: #999; fill: none; stroke-width: 1.6; z-index: 10; pointer-events: none; }
         .p2 .clip-l { left: 12px; } .p2 .clip-r { right: 12px; transform: scaleX(-1); }
-        
         .p2 .center-info { display: flex; flex-direction: column; gap: 12px; z-index: 2; margin-top: -15px; }
         .p2 .info-pill { display: flex; align-items: center; gap: 8px; background: rgba(245,245,245,0.8); border-radius: 12px; padding: 6px 14px; font-size: 11px; color: #555; font-weight: 500; backdrop-filter: blur(5px); pointer-events: none; }
         .p2 .info-pill svg { width: 15px; height: 15px; stroke: #888; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
         .p2 .center-quote { text-align: center; font-size: 11px; color: #666; margin-bottom: 30px; letter-spacing: 0.5px; }
-
         .p2 .bottom-grid { display: flex; gap: 18px; width: 100%; margin-top: 5px; }
         .p2 .together-widget { flex: 1.1; background: #fff; border-radius: 20px; padding: 18px 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center; border: 1px solid #f9f9f9; }
         .p2 .tog-title { display: flex; align-items: baseline; gap: 6px; font-size: 11px; color: #777; }
@@ -149,26 +98,12 @@
         .p2 .tog-ava { width: 55px; height: 55px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .p2 .tog-ava:nth-child(2) { margin-left: -15px; border: 2px solid #fff; }
         .p2 .tog-pill { border: 1px solid #eee; border-radius: 15px; padding: 6px 12px; font-size: 9px; color: #888; width: 90%; text-align: center; box-sizing: border-box; }
-        
-        .p2 .apps-grid { flex: 0.9; display: grid; grid-template-columns: 1fr 1fr; grid-gap: 20px 15px; }
-        .p2 .custom-app-icon { width: 48px; height: 48px; border-radius: 14px; position: relative; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .p2 .custom-app-icon::before { content: '+'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(255,255,255,0.9); font-size: 24px; font-weight: 300; pointer-events: none; z-index: 10; }
-
-        .dock-container {
-            position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%);
-            width: calc(100% - 40px); max-width: 380px; height: 85px;
-            background: rgba(225, 225, 225, 0.75); border-radius: 40px; backdrop-filter: blur(15px);
-            display: flex; justify-content: space-evenly; align-items: center; padding: 0 5px; box-sizing: border-box; z-index: 100;
-        }
+        .dock-container { position: absolute; bottom: 35px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 380px; height: 85px; background: rgba(225, 225, 225, 0.75); border-radius: 40px; backdrop-filter: blur(15px); display: flex; justify-content: space-evenly; align-items: center; padding: 0 5px; box-sizing: border-box; z-index: 100; }
         .dock-app { display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .dock-icon-wrapper { width: 46px; height: 46px; border-radius: 14px; border: 3px solid #fff; padding: 2px; box-sizing: border-box; background: #f0f0f0; display: flex; justify-content: center; align-items: center; pointer-events: none;}
         .dock-icon-wrapper svg { width: 22px; height: 22px; stroke: var(--icon-color); stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .dock-name { font-size: 10px; color: var(--text-main); transform: scale(0.9); font-weight: 500;}
-
-        .modal-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(3px);
-            z-index: 200; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.2s, visibility 0.2s;
-        }
+        .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(3px); z-index: 200; display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: opacity 0.2s, visibility 0.2s; }
         .modal-overlay.show { visibility: visible; opacity: 1; }
         .modal-content { background: rgba(255, 255, 255, 0.95); width: 280px; border-radius: 20px; padding: 22px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 15px; transform: scale(0.95); transition: transform 0.2s; }
         .modal-overlay.show .modal-content { transform: scale(1); }
@@ -182,11 +117,8 @@
     </style>
 </head>
 <body>
-
     <input type="file" id="imageUploader" accept="image/*" style="display: none;">
-
     <div class="phone-screen">
-        <!-- === iOS 顶部状态栏 === -->
         <div class="ios-status-bar">
             <div class="sys-time" id="sys-time">00:00</div>
             <div class="sys-icons">
@@ -205,7 +137,6 @@
         </div>
 
         <div class="slider-container">
-
             <!-- ================= 第一页 ================= -->
             <div class="page p1">
                 <div class="top-profile-card">
@@ -216,7 +147,6 @@
                         <div class="editable-text status-bubble" id="p1-txt-status">请输入文字</div>
                     </div>
                 </div>
-
                 <div class="pinned-section">
                     <div class="editable-text pinned-text" id="p1-txt-pin-label">置顶</div>
                     <div class="photos-container">
@@ -225,11 +155,9 @@
                         <div class="editable-img photo-square" id="p1-img-pin3"></div>
                     </div>
                 </div>
-                
                 <div class="japanese-quote-wrapper">
                     <div class="editable-text japanese-quote" id="p1-txt-quote">请输入文字</div>
                 </div>
-
                 <div class="mixed-grid">
                     <div class="complex-widget">
                         <div class="complex-header">
@@ -240,14 +168,8 @@
                             <div class="info-area">
                                 <div class="editable-text info-title" id="p1-txt-widget-title">请输入文字</div>
                                 <div class="data-row">
-                                    <div class="data-item">
-                                        <span class="sys-data" id="p1-txt-temp-val">--°</span>
-                                        <span class="sys-label">温度</span>
-                                    </div>
-                                    <div class="data-item">
-                                        <span class="sys-data" id="p1-txt-bat-val">--%</span>
-                                        <span class="sys-label">电量</span>
-                                    </div>
+                                    <div class="data-item"><span class="sys-data" id="p1-txt-temp-val">--°</span><span class="sys-label">温度</span></div>
+                                    <div class="data-item"><span class="sys-data" id="p1-txt-bat-val">--%</span><span class="sys-label">电量</span></div>
                                 </div>
                             </div>
                         </div>
@@ -256,15 +178,9 @@
                             <div class="editable-img photo-square" id="p1-img-bot2"></div>
                         </div>
                     </div>
-
                     <div class="apps-grid">
                         <div class="app-item">
-                            <div class="static-icon">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                                    <line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="15" y2="14"/>
-                                </svg>
-                            </div>
+                            <div class="static-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><circle cx="8" cy="11.5" r="1.2" fill="var(--icon-color)" stroke="none"/><circle cx="12" cy="11.5" r="1.2" fill="var(--icon-color)" stroke="none"/><circle cx="16" cy="11.5" r="1.2" fill="var(--icon-color)" stroke="none"/></svg></div>
                             <span class="editable-text app-name" id="p1-txt-app1">微信</span>
                         </div>
                         <div class="app-item">
@@ -289,7 +205,6 @@
                     <div class="editable-img top-avatar" id="p2-img-top-avatar"></div>
                     <div class="editable-text top-pill" id="p2-txt-top-pill">.* ˚ ₊ 我们的肩并肩幸福在指尖 ⋒ * ˚</div>
                 </div>
-
                 <div class="ribbon-grid">
                     <div class="ribbon-item">
                         <svg class="ribbon-svg" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11 C 4 3, 0 14, 12 11" /><path d="M12 11 C 20 3, 24 14, 12 11" /><path d="M12 11 Q 8 16 5 20" /><path d="M12 11 Q 16 16 19 20" /></svg>
@@ -312,96 +227,78 @@
                         <div class="editable-text ribbon-text" id="p2-txt-rib4">” ⸝⸝ ₋ ⸝⸝ ”</div>
                     </div>
                 </div>
-
                 <div class="polaroid-section">
                     <svg class="deco-svg" style="top: -10px; left: 60%; width: 25px; height: 25px;" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                     <svg class="deco-svg" style="bottom: -15px; left: 55%; width: 28px; height: 28px; fill: none; stroke: #ddd; stroke-width:1.5;" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                    
                     <div class="polaroid-card card-left">
                         <svg class="paperclip clip-l" viewBox="0 0 24 24"><path d="M10 16v-7a2 2 0 0 1 4 0v9a4 4 0 0 1-8 0v-10a6 6 0 0 1 12 0v11"/></svg>
                         <div class="editable-img polaroid-img" id="p2-img-pol1"></div>
                     </div>
-                    
                     <div class="center-info">
+                        <div class="info-pill"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span id="p2-txt-date">同步中..</span></div>
                         <div class="info-pill">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                            <span id="p2-txt-date">同步中..</span>
-                        </div>
-                        <div class="info-pill">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 18H7a4 4 0 0 1-1-7.9 6 6 0 0 1 11.8-1.7A3.5 3.5 0 0 1 17 18z"></path>
-                                <line x1="12" y1="2" x2="12" y2="4"></line><line x1="18.36" y1="5.64" x2="16.95" y2="7.05"></line><line x1="5.64" y1="5.64" x2="7.05" y2="7.05"></line>
-                            </svg>
-                            <span>
-                                <span id="p2-txt-weather-desc">晴</span> 
-                                <span id="p2-txt-temp-val">--°</span>
-                            </span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18H7a4 4 0 0 1-1-7.9 6 6 0 0 1 11.8-1.7A3.5 3.5 0 0 1 17 18z"></path><line x1="12" y1="2" x2="12" y2="4"></line><line x1="18.36" y1="5.64" x2="16.95" y2="7.05"></line><line x1="5.64" y1="5.64" x2="7.05" y2="7.05"></line></svg>
+                            <span><span id="p2-txt-weather-desc">晴</span> <span id="p2-txt-temp-val">--°</span></span>
                         </div>
                     </div>
-
                     <div class="polaroid-card card-right">
                         <svg class="paperclip clip-r" viewBox="0 0 24 24"><path d="M10 16v-7a2 2 0 0 1 4 0v9a4 4 0 0 1-8 0v-10a6 6 0 0 1 12 0v11"/></svg>
                         <div class="editable-img polaroid-img" id="p2-img-pol2"></div>
                     </div>
                 </div>
-
                 <div class="editable-text center-quote" id="p2-txt-mid-quote">. ๑ ⊹ 私たちに属する恋愛シーズン ⊹ ๑ .</div>
-
                 <div class="bottom-grid">
                     <div class="together-widget">
-                        <div class="tog-title">
-                            <span class="editable-text" id="p2-txt-tog-lbl">Together</span>
-                            <span class="editable-text tog-days" id="p2-txt-tog-day">534</span>
-                            <span class="editable-text" id="p2-txt-tog-unit">天</span>
-                        </div>
+                        <div class="tog-title"><span class="editable-text" id="p2-txt-tog-lbl">Together</span><span class="editable-text tog-days" id="p2-txt-tog-day">534</span><span class="editable-text" id="p2-txt-tog-unit">天</span></div>
                         <div class="tog-avatars">
-                            <div class="editable-img tog-ava" id="p2-img-tog-ava1" style="z-index: 2;"></div>
-                            <div class="editable-img tog-ava" id="p2-img-tog-ava2" style="z-index: 1;"></div>
+                            <div class="editable-img tog-ava" id="p2-img-tog-ava1" style="z-index: 2;"></div><div class="editable-img tog-ava" id="p2-img-tog-ava2" style="z-index: 1;"></div>
                         </div>
                         <div class="editable-text tog-pill" id="p2-txt-tog-bot">수백 번이고 널 위해 설레다 ₊⁺</div>
                     </div>
                     
+                    <!-- 【全新精简图标】 游戏, 倒数日, 美团, 情侣空间 -->
                     <div class="apps-grid">
                         <div class="app-item">
-                            <!-- 游戏：极简游戏手柄 -->
+                            <!-- 游戏：极简掌机十字键 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <rect x="2" y="6" width="20" height="12" rx="6"/><path d="M7 12h4M9 10v4"/><circle cx="15.5" cy="11.5" r="1" fill="var(--icon-color)" stroke="none"/><circle cx="17.5" cy="13.5" r="1" fill="var(--icon-color)" stroke="none"/>
+                                    <rect x="2" y="6" width="20" height="12" rx="6" />
+                                    <path d="M7 12h4M9 10v4M15 12h.01M18 12h.01" />
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-txt-app-v3-1">游戏</span>
+                            <span class="editable-text app-name" id="p2-app-name-1">游戏</span>
                         </div>
                         <div class="app-item">
-                            <!-- 倒数日：极简沙漏 -->
+                            <!-- 倒数日：极简漏斗 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <path d="M6 2h12M6 22h12M6 2l6 10-6 10M18 2l-6 10 6 10"/><path d="M12 12l-2 3.5v2.5h4v-2.5z" fill="var(--icon-color)" stroke="none"/>
+                                    <path d="M18 2H6v5l4 5-4 5v5h12v-5l-4-5 4-5V2z" />
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-txt-app-v3-2">倒数日</span>
+                            <span class="editable-text app-name" id="p2-app-name-2">倒数日</span>
                         </div>
                         <div class="app-item">
-                            <!-- 美团：极简西餐罩 -->
+                            <!-- 美团：极简送餐小碗 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <path d="M3 18h18M12 5c-5.5 0-10 4.5-10 10h20c0-5.5-4.5-10-10-10z"/><path d="M12 5V2M9 2h6"/>
+                                    <path d="M12 3a9 9 0 0 0-9 9h18a9 9 0 0 0-9-9zM3 13h18v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4z" />
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-txt-app-v3-3">美团</span>
+                            <span class="editable-text app-name" id="p2-app-name-3">美团</span>
                         </div>
                         <div class="app-item">
-                            <!-- 情侣空间：包含爱心的小屋 -->
+                            <!-- 情侣空间：极简带爱心的小房子 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24">
-                                    <path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 16.5s-3-2.5-3-4a2 2 0 0 1 4-1.5 2 2 0 0 1 4 1.5c0 1.5-3 4-3 4z"/>
+                                    <path d="M3 9l9-7 9 7v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9" />
+                                    <path d="M12 16s2.5-1.8 2.5-3.5A1.5 1.5 0 0 0 13 11a1.5 1.5 0 0 0-1 1 1.5 1.5 0 0 0-1-1 1.5 1.5 0 0 0-1.5 1.5C9.5 14.2 12 16 12 16z" />
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-txt-app-v3-4">情侣空间</span>
+                            <span class="editable-text app-name" id="p2-app-name-4">情侣空间</span>
                         </div>
                     </div>
                 </div>
             </div>
-            
         </div>
 
         <div class="dock-container">
@@ -410,11 +307,11 @@
                 <span class="editable-text dock-name" id="dock-txt-1">icity</span>
             </div>
             <div class="dock-app">
-                <!-- 论坛：重绘为极简重叠对话框 -->
+                <!-- 论坛：全新极简交流聊天板 -->
                 <div class="dock-icon-wrapper">
                     <svg viewBox="0 0 24 24">
-                        <rect x="3" y="3" width="14" height="14" rx="2" ry="2" />
-                        <path d="M7 21h12a2 2 0 0 0 2-2V7" />
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        <path d="M9 9h6M9 13h4"/>
                     </svg>
                 </div>
                 <span class="editable-text dock-name" id="dock-txt-2">论坛</span>
@@ -429,30 +326,10 @@
             </div>
         </div>
 
-        <div id="textModal" class="modal-overlay">
-            <div class="modal-content">
-                <div class="modal-title">修改文字</div>
-                <input type="text" id="modalInput" class="modal-input" autocomplete="off">
-                <div class="modal-buttons">
-                    <button id="btnCancel" class="modal-btn btn-cancel">取消</button>
-                    <button id="btnConfirm" class="modal-btn btn-confirm">确定</button>
-                </div>
-            </div>
-        </div>
+        <div id="textModal" class="modal-overlay"><div class="modal-content"><div class="modal-title">修改文字</div><input type="text" id="modalInput" class="modal-input" autocomplete="off"><div class="modal-buttons"><button id="btnCancel" class="modal-btn btn-cancel">取消</button><button id="btnConfirm" class="modal-btn btn-confirm">确定</button></div></div></div>
     </div>
 
-    <!-- 唤醒 PWA 服务 -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('服务引擎已加载，可以安装到桌面了！'))
-                    .catch(err => console.log('加载失败: ', err));
-            });
-        }
-    </script>
-    
-    <!-- 引入刚刚剥离的外部核心交互文件 -->
-    <script src="storage.js"></script>
+    <!-- 引用拆分的独立交互文件，保障数据持久化 -->
+    <script src="./storage.js"></script>
 </body>
 </html>

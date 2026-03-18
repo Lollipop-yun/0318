@@ -1,20 +1,24 @@
-const CACHE_NAME = 'winter-os-v1';
-const urlsToCache =[
-    './index.html',
-    './storage.js',
-    './manifest.json'
-];
+const CACHE_NAME = 'lindongji-v1';
 
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-        .then(cache => cache.addAll(urlsToCache))
+// 安装时缓存核心文件
+self.addEventListener('install', (e) => {
+    e.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll([
+                './',
+                './index.html',
+                './storage.js',
+                './manifest.json'
+            ]);
+        })
     );
 });
 
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-        .then(response => response || fetch(event.request))
+// 拦截请求，优先使用缓存
+self.addEventListener('fetch', (e) => {
+    e.respondWith(
+        caches.match(e.request).then((response) => {
+            return response || fetch(e.request);
+        })
     );
 });

@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- PWA 配置核心标签 -->
     <title>凛冬机</title>
+    <!-- PWA 配置 -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#ffffff">
-    <!-- iOS 专属全屏与桌面图标配置 -->
     <link rel="apple-touch-icon" href="https://pic1.imgdb.cn/item/69b964e2df27f3bc5808f6be.jpg">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="凛冬机">
+
+    <!-- 引入激活码样式 -->
+    <link rel="stylesheet" href="./activation.css">
 
     <style>
         :root {
@@ -30,15 +32,18 @@
         .sys-battery-fill { height: 100%; width: 50%; background-color: var(--sys-color); border-radius: 1.5px; transition: width 0.3s, background-color 0.3s; }
         .sys-battery-cap { width: 1px; height: 4px; background-color: rgba(0,0,0,0.45); border-top-right-radius: 2px; border-bottom-right-radius: 2px; margin-left: 1px; }
         .sys-battery-fill.charging { background-color: var(--ios-green) !important; }
+        
         .slider-container { display: flex; width: 100%; height: 100%; overflow-x: scroll; overflow-y: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .slider-container::-webkit-scrollbar { display: none; }
         .page { flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; box-sizing: border-box; padding: 70px 20px 105px 20px; display: flex; flex-direction: column; overflow-x: hidden; overflow-y: hidden; }
+        
         .editable-img { background: linear-gradient(135deg, #f5f5f5, #e8e8e8); border: 1px solid rgba(255,255,255,0.8); object-fit: cover; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
         .editable-img::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%); pointer-events: none; }
         .editable-img:active { transform: scale(0.96); }
         .has-image::after { display: none !important; }
         .editable-text { cursor: pointer; padding: 2px 4px; border-radius: 6px; transition: opacity 0.2s, background 0.2s; }
         .editable-text:active { opacity: 0.5; background: rgba(0,0,0,0.05); }
+        
         .p1 .top-profile-card { background: var(--widget-bg); border-radius: 30px; padding: 25px 15px 15px 15px; position: relative; margin-top: 15px; margin-bottom: 50px; border: var(--widget-border); box-shadow: var(--shadow); backdrop-filter: blur(10px); display: flex; flex-direction: column; align-items: center; }
         .p1 .profile-avatar { width: 55px; height: 55px; border-radius: 50%; position: absolute; top: -35px; border: 4px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 2; }
         .p1 .username { font-size: 13px; color: var(--text-main); margin-top: 12px; margin-bottom: 15px; }
@@ -49,9 +54,11 @@
         .p1 .pinned-text { writing-mode: horizontal-tb; font-size: 13px; color: var(--text-main); width: 40px; text-align: center; flex-shrink: 0; }
         .p1 .photos-container { display: flex; gap: 18px; flex: 1; }
         .p1 .photo-square { flex: 1; aspect-ratio: 1 / 1; border-radius: 16px; }
-        /* 第一页下方组件整体上移：调小了这里的 margin-bottom (原60px -> 35px) */
-        .p1 .japanese-quote-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 35px; margin-left: 20px; }
+        
+        /* [调整] 第一页组件整体上移：大幅减小这部分的下边距 */
+        .p1 .japanese-quote-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 30px; margin-left: 20px; }
         .p1 .japanese-quote { background: #eaeaea; border-radius: 24px; padding: 8px 18px; text-align: center; font-size: 12px; color: var(--text-main); font-weight: 500; letter-spacing: 0.5px; }
+        
         .p1 .mixed-grid { display: flex; gap: 25px; width: 100%; } 
         .p1 .complex-widget { flex: 1.1; display: flex; flex-direction: column; gap: 15px; }
         .p1 .complex-header { display: flex; align-items: center; gap: 12px; padding-left: 5px; }
@@ -72,6 +79,7 @@
         .static-icon svg { width: 24px; height: 24px; stroke: var(--icon-color); stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .app-name { font-size: 11px; color: var(--text-main); white-space: nowrap; }
 
+        /* ================= 第二页 样式 ================= */
         .p2 .header-row { display: flex; gap: 15px; align-items: center; justify-content: center; margin-top: 15px; margin-bottom: 25px; }
         .p2 .top-avatar { width: 50px; height: 50px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .p2 .top-pill { border: 1px solid #ddd; border-radius: 20px; padding: 10px 22px; font-size: 12px; color: #666; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); }
@@ -80,7 +88,9 @@
         .p2 .ribbon-avatar { width: 50px; height: 50px; border-radius: 50%; position: relative; z-index: 1; }
         .p2 .ribbon-svg { position: absolute; top: -14px; right: -10px; width: 34px; height: 34px; z-index: 10; pointer-events: none; transform: rotate(10deg); }
         .p2 .ribbon-text { font-size: 9px; color: #777; font-family: monospace; font-weight: 500;}
-        .p2 .polaroid-section { display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; margin-bottom: 35px; } 
+        
+        /* [调整] 第二页下方组件整体大幅度上移 */
+        .p2 .polaroid-section { display: flex; justify-content: center; align-items: center; gap: 15px; position: relative; margin-bottom: 15px; } /* 缩小间距 */
         .p2 .deco-svg { position: absolute; fill: #eee; z-index: 0; }
         .p2 .polaroid-card { background: #fff; padding: 6px 6px 20px 6px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; z-index: 2; border: 1px solid #f9f9f9; }
         .p2 .card-left { transform: rotate(-6deg); }
@@ -92,8 +102,7 @@
         .p2 .info-pill { display: flex; align-items: center; gap: 8px; background: rgba(245,245,245,0.8); border-radius: 12px; padding: 6px 14px; font-size: 11px; color: #555; font-weight: 500; backdrop-filter: blur(5px); pointer-events: none; }
         .p2 .info-pill svg { width: 15px; height: 15px; stroke: #888; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
         
-        /* 第二页下方组件整体上移：调小了这里的 margin-bottom (原30px -> 12px) */
-        .p2 .center-quote { text-align: center; font-size: 11px; color: #666; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .p2 .center-quote { text-align: center; font-size: 11px; color: #666; margin-bottom: 12px; letter-spacing: 0.5px; } /* 缩小间距 */
         
         .p2 .bottom-grid { display: flex; gap: 18px; width: 100%; margin-top: 5px; }
         .p2 .together-widget { flex: 1.1; background: #fff; border-radius: 20px; padding: 18px 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center; border: 1px solid #f9f9f9; }
@@ -129,10 +138,38 @@
 </head>
 <body>
 
+    <!-- === 核心注入：首次激活验证覆盖层 === -->
+    <div id="activation-overlay">
+        <div class="auth-card">
+            <div class="auth-header"><h2 class="auth-title">凛冬机</h2></div>
+            <div class="auth-tabs">
+                <span class="auth-tab active" id="tab-register">激活账号</span>
+                <span class="auth-tab" id="tab-login">直接登录</span>
+            </div>
+            <div class="auth-form">
+                <input type="text" class="auth-input" id="input-user" placeholder="请输入您的账号" autocomplete="off">
+                <input type="password" class="auth-input" id="input-pass" placeholder="请输入密码设置" autocomplete="off">
+                <input type="text" class="auth-input" id="input-code" placeholder="输入卡密 (winter-xxxx-xxxx)" autocomplete="off">
+                <div class="auth-error" id="auth-error-msg"></div>
+                <button class="auth-btn" id="btn-auth-submit">绑 定 激 活</button>
+            </div>
+        </div>
+        
+        <!-- 免责声明与指路 -->
+        <div class="disclaimer-box">
+            <p>免责声明：本页面及代码仅供学习交流使用</p>
+            <p>原作者小红书：<span class="highlight">@檩因冬信</span></p>
+            <p>售前咨询交流群：<span class="highlight">436220308</span></p>
+        </div>
+    </div>
+
+    <!-- 引入激活系统逻辑 -->
+    <script src="./activation.js"></script>
+
     <input type="file" id="imageUploader" accept="image/*" style="display: none;">
 
+    <!-- === 手机屏幕主视图 === -->
     <div class="phone-screen">
-        <!-- === iOS 顶部状态栏 === -->
         <div class="ios-status-bar">
             <div class="sys-time" id="sys-time">00:00</div>
             <div class="sys-icons">
@@ -272,47 +309,46 @@
                     
                     <div class="apps-grid">
                         <div class="app-item">
-                            <!-- 【重绘】游戏：极简掌机十字键 -->
+                            <!-- 【更新】游戏：掌机 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--icon-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="2" y="6" width="20" height="12" rx="6" />
                                     <path d="M7 12h4M9 10v4M15 12h.01M18 12h.01" />
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-app-name-1">游戏</span>
+                            <span class="editable-text app-name" id="p2-app-name-new1">游戏</span>
                         </div>
                         <div class="app-item">
-                            <!-- 【重绘】倒数日：极简漏斗 -->
+                            <!-- 【更新】倒数日：沙漏 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--icon-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M18 2H6v5l4 5-4 5v5h12v-5l-4-5 4-5V2z" />
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-app-name-2">倒数日</span>
+                            <span class="editable-text app-name" id="p2-app-name-new2">倒数日</span>
                         </div>
                         <div class="app-item">
-                            <!-- 【重绘】美团：可爱的动物袋鼠轮廓 -->
+                            <!-- 【全新重绘】美团：带耳朵的可爱的微笑外卖盒/袋鼠轮廓 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--icon-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M4 11a8 8 0 0 0 16 0 8 8 0 0 0-16 0z" />
-                                    <path d="M4 11L2 5l4.5 2.5" />
-                                    <path d="M20 11l2-6-4.5 2.5" />
-                                    <circle cx="9" cy="11" r="1.5" fill="var(--icon-color)" stroke="none"/>
-                                    <circle cx="15" cy="11" r="1.5" fill="var(--icon-color)" stroke="none"/>
-                                    <path d="M12 14c-1 0-2-.5-2-1h4c0 .5-1 1-2 1z" />
+                                    <path d="M4 10a8 8 0 0 1 16 0v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10z" />
+                                    <path d="M4 10L6 3l3.5 2" />
+                                    <path d="M20 10L18 3l-3.5 2" />
+                                    <path d="M9 15h6" />
+                                    <path d="M12 15v3" />
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-app-name-3">美团</span>
+                            <span class="editable-text app-name" id="p2-app-name-new3">美团</span>
                         </div>
                         <div class="app-item">
-                            <!-- 【重绘】情侣空间：星星闪烁的爱心 -->
+                            <!-- 【全新重绘】情侣空间：闪亮爱心的小屋 -->
                             <div class="static-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--icon-color)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                                    <path d="M17 2v5M14.5 4.5h5"/>
+                                    <path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10z"/>
+                                    <path d="M12 16.5l-3-3a1.5 1.5 0 0 1 2.1-2.1L12 12.3l.9-1.9a1.5 1.5 0 0 1 2.1 2.1l-3 3z" fill="var(--icon-color)"/>
                                 </svg>
                             </div>
-                            <span class="editable-text app-name" id="p2-app-name-4">情侣空间</span>
+                            <span class="editable-text app-name" id="p2-app-name-new4">情侣空间</span>
                         </div>
                     </div>
                 </div>
@@ -348,7 +384,7 @@
         <div id="textModal" class="modal-overlay"><div class="modal-content"><div class="modal-title">修改文字</div><input type="text" id="modalInput" class="modal-input" autocomplete="off"><div class="modal-buttons"><button id="btnCancel" class="modal-btn btn-cancel">取消</button><button id="btnConfirm" class="modal-btn btn-confirm">确定</button></div></div></div>
     </div>
 
-    <!-- 引用拆分的独立交互文件，保障数据持久化 -->
+    <!-- 引用核心持久化组件 -->
     <script src="./storage.js"></script>
 </body>
 </html>
